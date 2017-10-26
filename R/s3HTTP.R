@@ -38,15 +38,15 @@ function(verb = "GET",
          accelerate = FALSE,
          dualstack = FALSE,
          parse_response = TRUE, 
-         check_region = TRUE,
+         check_region = FALSE,
          url_style = c("path", "virtual"),
-         base_url = "s3.amazonaws.com",
+         base_url = "rgw.ul-svd-ex.ul.ca",
          verbose = getOption("verbose", FALSE),
          region = NULL, 
          key = NULL, 
          secret = NULL, 
          session_token = NULL,
-         use_https = TRUE,
+         use_https = FALSE,
          ...) {
     
     # locate and validate credentials
@@ -216,9 +216,9 @@ function(bucketname,
          accelerate = FALSE, 
          dualstack = FALSE,
          url_style = c("path", "virtual"), 
-         base_url = "s3.amazonaws.com",
+         base_url = "rgw.ul-svd-ex.ul.ca",
          verbose = getOption("verbose", FALSE),
-         use_https = TRUE) 
+         use_https = FALSE) 
 {
     url_style <- match.arg(url_style)
     
@@ -226,6 +226,9 @@ function(bucketname,
     if (base_url != "s3.amazonaws.com") {
         if (isTRUE(verbose) && url_style != "path") {
             message("Non-AWS base URL requested. Switching to path-style URLs.")
+            
+            # BRLAV35: it's a good thing to be path-style URL because it makes a lot less DNS queries
+            #          than using wildcard style URLs, by reusing local DNS caches.
         }
         url_style <- "path"
         accelerate <- FALSE
